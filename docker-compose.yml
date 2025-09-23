@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:15
@@ -14,14 +12,17 @@ services:
 
   app:
     build: .
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    volumes:
+      - .:/app
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://user:password@db:5432/qa_db
+      - DATABASE_URL=postgresql://user:password@db:5432/qa_db
     depends_on:
       - db
-    volumes:
-      - .:/app
 
 volumes:
   postgres_data:
