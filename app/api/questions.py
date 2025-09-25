@@ -1,12 +1,14 @@
+from app import schemas
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from .. import crud, schemas
 from ..database import get_db
+from ..schemas import QuestionResponse
 
 router = APIRouter(prefix="/questions", tags=["questions"])
 
 
-@router.get("/", response_model=list[schemas.QuestionResponse])
+@router.get("/", response_model=list[QuestionResponse])
 def read_questions(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     questions = crud.get_questions(db, skip=skip, limit=limit)
     return questions
